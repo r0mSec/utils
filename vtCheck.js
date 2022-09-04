@@ -1,9 +1,10 @@
 
 const { Client } = require('@elastic/elasticsearch')
 const https = require('https');
+let auth = require('./authenString.json')
 var client = new Client(
     {
-        node: 'http://elastic:xxxx@localhost:9200'
+        node: 'http://' + auth.name + ':' + auth.pass + '@' + auth.server + ':' + auth.port
     });
 
 
