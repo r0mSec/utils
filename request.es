@@ -1,3 +1,33 @@
+GET orc-*/_search
+{
+   "query":{
+      "bool":{
+         "must": [
+          { "exists": { "field": "process.pe.original_file_name" } },
+          { "exists": { "field": "file.name" } },
+          { "term": { "file.extension.keyword" : "exe"         } }
+          ],
+          "must_not": [
+            {  "wildcard": {"file.name.keyword": { "value": "*~*"      }    } },
+            { "terms": { "file.name.keyword" :  [ "schtasks.exe" ]     } },
+            {  "wildcard": {"file.directory.keyword": { "value": "*assembly*"      }    } }
+
+          ], 
+         "filter":[
+            {
+        "script": {
+            "script": {
+                "source": "doc['process.pe.original_file_name.keyword'].value.toLowerCase() != doc['file.name.keyword'].value.toLowerCase()",
+                "lang": "painless"
+            }
+}
+            }
+         ]
+      }
+   },
+   "track_total_hits": true
+}
+
 GET _search
 {
   "query": {
